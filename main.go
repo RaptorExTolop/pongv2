@@ -23,8 +23,9 @@ var (
 	dt                             float32
 	windowHeight, windowWidth, fps int32
 
-	player = Player{}
-	ball   = Ball{}
+	player       = Player{}
+	ball         = Ball{}
+	score  int32 = 0
 )
 
 func input() {
@@ -44,9 +45,9 @@ func update() {
 	dt = rl.GetFrameTime()
 	player.Y += float32(player.speed*player.dir) * dt
 	player.dir = 0
-	ball.X = ball.update()
+	ball.update(&player)
 	//fmt.Println(math.Round(float64(dt)))
-	fmt.Println((float32(player.speed*player.dir) * dt))
+	//fmt.Println((float32(player.speed*player.dir) * dt))
 }
 
 func draw() {
@@ -63,6 +64,7 @@ func draw() {
 	*/
 	rl.DrawText(fmt.Sprint("FPS: ", fps), 0, 0, 24, rl.White)
 	rl.DrawText(fmt.Sprint("DT:  ", dt), 0, 28, 24, rl.White)
+	rl.DrawText(fmt.Sprint("SCORE: ", score), 0, 56, 24, rl.White)
 
 	rl.EndDrawing()
 }
@@ -72,11 +74,12 @@ func init() {
 	windowWidth = 1280
 
 	rl.InitWindow(windowWidth, windowHeight, "Pong")
+	rl.SetTargetFPS(60)
 	running = true
 	player = Player{5, 0, 30, 150, rl.RayWhite, 0, 200}
 	player.Y = float32((windowHeight / 2) - (player.Height / 2))
 
-	ball = Ball{0, 0, 25, rl.RayWhite}
+	ball = Ball{0, 0, 25, 20, rl.RayWhite, 1}
 	ball.X = windowWidth / 2
 	ball.Y = windowHeight/2 - ball.Radius
 }
