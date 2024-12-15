@@ -9,23 +9,43 @@ import (
 type Ball struct {
 	X, Y, Radius, Speed int32
 	Colour              rl.Color
-	dir                 int32
+	dirX, dirY          int32
 }
 
 func (b *Ball) update(p *Player) {
-	if b.X-b.Radius <= p.X && b.X+b.Radius >= p.X {
+	b.X += b.Speed * b.dirX
+	b.Y += b.Speed * b.dirY
+	if b.checkCollisionWithPlayer(p) {
 		fmt.Println("collision with paddle")
-		b.dir *= 1
+		b.dirX *= -1
+		b.dirY *= -1
+	} else {
+		if b.X+b.Radius >= windowWidth {
+			b.dirX *= -1
+			fmt.Println("reached left wall")
+			score += 1
+		} else if b.X <= 0 {
+			b.dirX *= -1
+			fmt.Println("reached right wall")
+			score = 0
+		}
+		if b.Y <= 0 {
+			b.dirY *= -1
+		} else if b.Y >= windowHeight {
+			b.dirY *= -1
+		}
 	}
+}
 
-	if b.X+b.Radius >= windowWidth {
-		b.dir *= -1
-		fmt.Println("reached left wall")
-		score += 1
-	} else if b.X <= 0 {
-		b.dir *= -1
-		fmt.Println("reached right wall")
-		score = 0
+func (b *Ball) checkCollisionWithPlayer(p *Player) bool {
+	topFunc := func() bool {
+		return b.X-b.Radius <= p.X && b.Y-b.Radius >= int32(p.Y)
 	}
-	b.X += b.Speed * b.dir
+	top := topFunc()
+	bottomFunc := func() bool {
+		return b.X+b.Radius >= p.X+p.Width && b.Y+b.Radius <= int32(p.Y)+p.Height
+	}
+	bottom := bottomFunc()
+
+	return top && bottom
 }

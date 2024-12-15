@@ -76,10 +76,10 @@ func init() {
 	rl.InitWindow(windowWidth, windowHeight, "Pong")
 	rl.SetTargetFPS(60)
 	running = true
-	player = Player{5, 0, 30, 150, rl.RayWhite, 0, 200}
+	player = Player{5, 0, 30, 150, rl.RayWhite, 0, 350}
 	player.Y = float32((windowHeight / 2) - (player.Height / 2))
 
-	ball = Ball{0, 0, 25, 20, rl.RayWhite, 1}
+	ball = Ball{0, 0, 25, 10, rl.RayWhite, 1, 1}
 	ball.X = windowWidth / 2
 	ball.Y = windowHeight/2 - ball.Radius
 }
